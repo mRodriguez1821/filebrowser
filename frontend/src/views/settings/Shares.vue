@@ -1,63 +1,75 @@
 <template>
   <errors v-if="error" :errorCode="error.status" />
-  <div class="row" v-else-if="!layoutStore.loading">
-    <div class="column">
-      <div class="card">
-        <div class="card-title">
-          <h2>{{ t("settings.shareManagement") }}</h2>
-        </div>
+  <div class="settings-flat-view" v-else-if="!layoutStore.loading">
+    <h2 class="settings-section-title">{{ t("settings.shareManagement") }}</h2>
 
-        <div class="card-content full" v-if="links.length > 0">
-          <table>
-            <tr>
-              <th>{{ t("settings.path") }}</th>
-              <th>{{ t("settings.shareDuration") }}</th>
-              <th v-if="authStore.user?.perm.admin">
-                {{ t("settings.username") }}
-              </th>
-              <th></th>
-              <th></th>
-            </tr>
-
-            <tr v-for="link in links" :key="link.hash">
-              <td>
-                <a :href="buildLink(link)" target="_blank">{{ link.path }}</a>
-              </td>
-              <td>
-                <template v-if="link.expire !== 0">{{
-                  humanTime(link.expire)
-                }}</template>
-                <template v-else>{{ t("permanent") }}</template>
-              </td>
-              <td v-if="authStore.user?.perm.admin">{{ link.username }}</td>
-              <td class="small">
-                <button
-                  class="action"
-                  @click="deleteLink($event, link)"
-                  :aria-label="t('buttons.delete')"
-                  :title="t('buttons.delete')"
-                >
-                  <i class="material-icons">delete</i>
-                </button>
-              </td>
-              <td class="small">
-                <button
-                  class="action copy-clipboard"
-                  :aria-label="t('buttons.copyToClipboard')"
-                  :title="t('buttons.copyToClipboard')"
-                  @click="copyToClipboard(buildLink(link))"
-                >
-                  <i class="material-icons">content_paste</i>
-                </button>
-              </td>
-            </tr>
-          </table>
-        </div>
-        <h2 class="message" v-else>
-          <i class="material-icons">sentiment_dissatisfied</i>
-          <span>{{ t("files.lonely") }}</span>
-        </h2>
-      </div>
+    <div class="table-responsive" v-if="links.length > 0">
+      <table class="settings-table">
+        <thead>
+          <tr>
+            <th>{{ t("settings.path") }}</th>
+            <th>{{ t("settings.shareDuration") }}</th>
+            <th v-if="authStore.user?.perm.admin">
+              {{ t("settings.username") }}
+            </th>
+            <th class="action-cell"></th>
+            <th class="action-cell"></th>
+            <th class="action-cell"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="link in links" :key="link.hash">
+            <td>
+              <a :href="buildLink(link)" target="_blank" class="share-link-text">{{ link.path }}</a>
+            </td>
+            <td>
+              <template v-if="link.expire !== 0">{{
+                humanTime(link.expire)
+              }}</template>
+              <template v-else>{{ t("permanent") }}</template>
+            </td>
+            <td v-if="authStore.user?.perm.admin">{{ link.username }}</td>
+            <!-- 1. Open in new tab -->
+            <td class="small action-cell">
+              <a
+                :href="buildLink(link)"
+                target="_blank"
+                class="table-action-btn"
+                :title="t('buttons.open')"
+                :aria-label="t('buttons.open')"
+              >
+                <i class="material-icons">open_in_new</i>
+              </a>
+            </td>
+            <!-- 2. Copy Link -->
+            <td class="small action-cell">
+              <button
+                class="table-action-btn copy-clipboard"
+                :aria-label="t('buttons.copyToClipboard')"
+                :title="t('buttons.copyToClipboard')"
+                @click="copyToClipboard(buildLink(link))"
+              >
+                <i class="material-icons">content_paste</i>
+              </button>
+            </td>
+            <!-- 3. Delete Link -->
+            <td class="small action-cell">
+              <button
+                class="table-action-btn"
+                @click="deleteLink($event, link)"
+                :aria-label="t('buttons.delete')"
+                :title="t('buttons.delete')"
+              >
+                <i class="material-icons">delete</i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="empty-state-message" v-else>
+      <i class="material-icons">sentiment_dissatisfied</i>
+      <span>{{ t("files.lonely") }}</span>
     </div>
   </div>
 </template>

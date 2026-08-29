@@ -1,5 +1,308 @@
 .dashboard {
-  margin: 1em 0;
+  margin: 0.5em 0;
+}
+
+/* Google Drive Modern Settings Layout (Flat & Clean) */
+.settings-flat-view {
+  width: 100%;
+  max-width: 100%;
+  padding: 0.5em 0 3em;
+  box-sizing: border-box;
+}
+
+.settings-section {
+  padding: 0.75em 0;
+}
+
+.settings-section-title {
+  font-size: 1.3em;
+  font-weight: 600;
+  color: var(--textSecondary);
+  margin: 0 0 1em 0;
+  letter-spacing: -0.01em;
+}
+
+.settings-section-desc {
+  font-size: 0.95em;
+  color: var(--textPrimary);
+  margin: 0 0 1.25em 0;
+}
+
+.settings-divider {
+  height: 1px;
+  background: var(--divider);
+  margin: 1.5em 0;
+}
+
+.settings-header-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25em;
+}
+
+.settings-header-action-row .settings-section-title {
+  margin: 0;
+}
+
+/* Flat Form & Inputs */
+.password-flat-form {
+  max-width: 28em;
+}
+
+/* Table Flat Layout */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.settings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.5em 0;
+}
+
+.settings-table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--textPrimary);
+  border-bottom: 1px solid var(--borderPrimary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.settings-table td {
+  padding: 0.9em 1em;
+  font-size: 0.95em;
+  color: var(--textSecondary);
+  border-bottom: 1px solid var(--divider);
+  transition: 0.12s ease background-color;
+}
+
+.settings-table tbody tr:hover td {
+  background-color: var(--hover);
+}
+
+.settings-table td.action-cell,
+.settings-table th.action-cell {
+  text-align: right;
+  width: 3em;
+}
+
+.table-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25em;
+  height: 2.25em;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--iconPrimary);
+  cursor: pointer;
+  transition: 0.15s ease all;
+  text-decoration: none;
+}
+
+.table-action-btn:hover {
+  background-color: var(--iconHover);
+  color: var(--textSecondary);
+}
+
+.check-icon {
+  color: #10b981;
+  font-size: 1.3em;
+  vertical-align: middle;
+}
+
+.close-icon {
+  color: #ef4444;
+  font-size: 1.3em;
+  vertical-align: middle;
+}
+
+.share-link-text {
+  color: var(--blue);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.share-link-text:hover {
+  text-decoration: underline;
+}
+
+.empty-state-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  padding: 3em 1em;
+  color: var(--textPrimary);
+}
+
+.empty-state-message i {
+  font-size: 3em;
+  opacity: 0.5;
+}
+
+/* Radio Group */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85em;
+}
+
+.radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75em;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.95em;
+  color: var(--textSecondary);
+}
+
+.radio-label input[type="radio"] {
+  display: none;
+}
+
+.radio-custom {
+  width: 1.25em;
+  height: 1.25em;
+  border-radius: 50%;
+  border: 2px solid var(--iconTertiary);
+  position: relative;
+  transition: 0.15s ease all;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.radio-label input[type="radio"]:checked + .radio-custom {
+  border-color: var(--blue);
+}
+
+.radio-label input[type="radio"]:checked + .radio-custom::after {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.radio-text {
+  font-size: 0.95em;
+}
+
+/* Checkboxes */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  margin-bottom: 1.5em;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65em;
+  cursor: pointer;
+  user-select: none;
+  font-size: 0.95em;
+  color: var(--textSecondary);
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 1.2em;
+  height: 1.2em;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+/* Form Fields */
+.form-row-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+@media (max-width: 768px) {
+  .form-row-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  margin-bottom: 0.75em;
+}
+
+.form-label {
+  font-size: 0.88em;
+  font-weight: 500;
+  color: var(--textPrimary);
+}
+
+.settings-action-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.25em;
+}
+
+/* Floating Actions in Settings */
+.settings-floating-actions {
+  position: fixed;
+  bottom: 2em;
+  right: 2.25em;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+}
+
+.settings-floating-actions .button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.8em 1.6em;
+  font-size: 0.95em;
+  font-weight: 600;
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+  transition: 0.15s ease all;
+  cursor: pointer;
+}
+
+.settings-floating-actions .button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.3);
+}
+
+.settings-floating-actions .button:active {
+  transform: translateY(0);
+}
+
+.settings-floating-actions .button i {
+  font-size: 1.3em;
+}
+
+/* Storage in Settings */
+.storage-info-box {
+  margin-top: 0.5em;
+}
+
+.storage-usage-label {
+  font-size: 1.05em;
+  color: var(--textSecondary);
+  margin: 0 0 0.75em 0;
+  font-weight: 500;
 }
 
 .dashboard .row {
@@ -161,11 +464,9 @@ table tr > *:last-child {
   margin: 0 0 1rem 0;
   background: var(--surfacePrimary);
   color: var(--textSecondary);
-  border-radius: 2px;
-  box-shadow:
-    0 2px 2px 0 rgba(0, 0, 0, 0.14),
-    0 1px 5px 0 rgba(0, 0, 0, 0.12),
-    0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 1px solid var(--borderPrimary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   overflow: auto;
 }
 
@@ -174,11 +475,12 @@ table tr > *:last-child {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  max-width: 25em;
+  max-width: 28em;
   width: 90%;
   max-height: 95%;
-  /* animation-duration: 0.3s;
-  animation-fill-mode: forwards; */
+  border-radius: 16px;
+  border: 1px solid var(--borderPrimary);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
 }
 
 .card > * > *:first-child {

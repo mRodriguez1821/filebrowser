@@ -1,14 +1,12 @@
 <template>
   <errors v-if="error" :errorCode="error.status" />
-  <div class="row" v-else-if="!layoutStore.loading">
-    <div class="column">
-      <form @submit="save" class="card">
-        <div class="card-title">
-          <h2 v-if="user?.id === 0">{{ $t("settings.newUser") }}</h2>
-          <h2 v-else>{{ $t("settings.user") }} {{ user?.username }}</h2>
-        </div>
+  <div class="settings-flat-view" v-else-if="!layoutStore.loading">
+    <form @submit="save">
+      <section class="settings-section">
+        <h2 class="settings-section-title" v-if="user?.id === 0">{{ $t("settings.newUser") }}</h2>
+        <h2 class="settings-section-title" v-else>{{ $t("settings.user") }} {{ user?.username }}</h2>
 
-        <div class="card-content" v-if="user">
+        <div v-if="user">
           <user-form
             v-model:user="user"
             v-model:createUserDir="createUserDir"
@@ -17,34 +15,35 @@
           />
         </div>
 
-        <div class="card-action">
+        <div class="settings-floating-actions">
           <button
             v-if="!isNew"
             @click.prevent="deletePrompt"
             type="button"
-            class="button button--flat button--red"
+            class="button button--red"
             :aria-label="$t('buttons.delete')"
             :title="$t('buttons.delete')"
           >
+            <i class="material-icons">delete</i>
             {{ $t("buttons.delete") }}
           </button>
           <router-link to="/settings/users">
             <button
-              class="button button--flat button--grey"
+              class="button button--grey"
               :aria-label="$t('buttons.cancel')"
               :title="$t('buttons.cancel')"
+              type="button"
             >
               {{ $t("buttons.cancel") }}
             </button>
           </router-link>
-          <input
-            class="button button--flat"
-            type="submit"
-            :value="$t('buttons.save')"
-          />
+          <button class="button" type="submit">
+            <i class="material-icons">save</i>
+            {{ $t("buttons.save") }}
+          </button>
         </div>
-      </form>
-    </div>
+      </section>
+    </form>
   </div>
 </template>
 

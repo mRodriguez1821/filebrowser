@@ -1,56 +1,6 @@
 <template>
-  <div class="dashboard">
-    <header-bar showMenu showLogo />
-
-    <div id="nav">
-      <div class="wrapper">
-        <ul>
-          <router-link to="/settings/profile"
-            ><li :class="{ active: $route.path === '/settings/profile' }">
-              {{ t("settings.profileSettings") }}
-            </li></router-link
-          >
-          <router-link to="/settings/shares" v-if="user?.perm.share"
-            ><li :class="{ active: $route.path === '/settings/shares' }">
-              {{ t("settings.shareManagement") }}
-            </li></router-link
-          >
-          <router-link to="/settings/global" v-if="user?.perm.admin"
-            ><li :class="{ active: $route.path === '/settings/global' }">
-              {{ t("settings.globalSettings") }}
-            </li></router-link
-          >
-          <router-link to="/settings/users" v-if="user?.perm.admin"
-            ><li
-              :class="{
-                active:
-                  $route.path === '/settings/users' || $route.name === 'User',
-              }"
-            >
-              {{ t("settings.userManagement") }}
-            </li></router-link
-          >
-        </ul>
-      </div>
-    </div>
-
-    <div class="card" v-if="user?.perm.admin">
-      <div class="card-title">
-        <h2>{{ t("settings.sunsetTitle") }}</h2>
-      </div>
-
-      <div class="card-content">
-        <p>{{ t("settings.sunsetBody") }}</p>
-        <p>
-          <a
-            href="https://github.com/filebrowser/filebrowser#security"
-            target="_blank"
-            rel="noopener noreferrer"
-            >{{ t("settings.sunsetLink") }}</a
-          >
-        </p>
-      </div>
-    </div>
+  <div class="dashboard settings-page">
+    <header-bar />
 
     <div v-if="loading">
       <h2 class="message delayed">

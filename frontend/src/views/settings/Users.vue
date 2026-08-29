@@ -1,42 +1,45 @@
 <template>
   <errors v-if="error" :errorCode="error.status" />
-  <div class="row" v-else-if="!layoutStore.loading">
-    <div class="column">
-      <div class="card">
-        <div class="card-title">
-          <h2>{{ t("settings.users") }}</h2>
-          <router-link to="/settings/users/new"
-            ><button class="button">
-              {{ t("buttons.new") }}
-            </button></router-link
-          >
-        </div>
+  <div class="settings-flat-view" v-else-if="!layoutStore.loading">
+    <div class="settings-header-action-row">
+      <h2 class="settings-section-title">{{ t("settings.users") }}</h2>
+      <router-link to="/settings/users/new">
+        <button class="button">
+          {{ t("buttons.new") }}
+        </button>
+      </router-link>
+    </div>
 
-        <div class="card-content full">
-          <table>
-            <tr>
-              <th>{{ t("settings.username") }}</th>
-              <th>{{ t("settings.admin") }}</th>
-              <th>{{ t("settings.scope") }}</th>
-              <th></th>
-            </tr>
-
-            <tr v-for="user in users" :key="user.id">
-              <td>{{ user.username }}</td>
-              <td>
-                <i v-if="user.perm.admin" class="material-icons">done</i
-                ><i v-else class="material-icons">close</i>
-              </td>
-              <td>{{ user.scope }}</td>
-              <td class="small">
-                <router-link :to="'/settings/users/' + user.id"
-                  ><i class="material-icons">mode_edit</i></router-link
-                >
-              </td>
-            </tr>
-          </table>
-        </div>
-      </div>
+    <div class="table-responsive">
+      <table class="settings-table">
+        <thead>
+          <tr>
+            <th>{{ t("settings.username") }}</th>
+            <th>{{ t("settings.admin") }}</th>
+            <th>{{ t("settings.scope") }}</th>
+            <th class="action-cell"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id">
+            <td class="user-name-cell">{{ user.username }}</td>
+            <td>
+              <i v-if="user.perm.admin" class="material-icons check-icon">done</i>
+              <i v-else class="material-icons close-icon">close</i>
+            </td>
+            <td>{{ user.scope }}</td>
+            <td class="small action-cell">
+              <router-link
+                :to="'/settings/users/' + user.id"
+                class="table-action-btn"
+                :title="t('buttons.edit')"
+              >
+                <i class="material-icons">mode_edit</i>
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
