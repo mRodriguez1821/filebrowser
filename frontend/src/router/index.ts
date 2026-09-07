@@ -9,7 +9,11 @@ import User from "@/views/settings/User.vue";
 import Settings from "@/views/Settings.vue";
 import GlobalSettings from "@/views/settings/Global.vue";
 import ProfileSettings from "@/views/settings/Profile.vue";
+import Security from "@/views/settings/Security.vue";
+import UserDefaults from "@/views/settings/UserDefaults.vue";
+import Commands from "@/views/settings/Commands.vue";
 import Shares from "@/views/settings/Shares.vue";
+import Shared from "@/views/Shared.vue";
 import Errors from "@/views/Errors.vue";
 import { useAuthStore } from "@/stores/auth";
 import { baseURL, name } from "@/utils/constants";
@@ -20,11 +24,15 @@ import { login, validateLogin } from "@/utils/auth";
 const titles = {
   Login: "sidebar.login",
   Share: "buttons.share",
+  Shared: "sidebar.sharedResources",
   Files: "files.files",
   Settings: "sidebar.settings",
   ProfileSettings: "settings.profileSettings",
+  Security: "settings.security",
   Shares: "settings.shareManagement",
   GlobalSettings: "settings.globalSettings",
+  UserDefaults: "settings.userDefaults",
+  Commands: "settings.commandRunner",
   Users: "settings.users",
   User: "settings.user",
   Forbidden: "errors.forbidden",
@@ -46,6 +54,20 @@ const routes = [
         path: ":path*",
         name: "Share",
         component: Share,
+      },
+    ],
+  },
+  {
+    path: "/shared",
+    component: Layout,
+    meta: {
+      requiresAuth: true,
+    },
+    children: [
+      {
+        path: "",
+        name: "Shared",
+        component: Shared,
       },
     ],
   },
@@ -84,6 +106,11 @@ const routes = [
             component: ProfileSettings,
           },
           {
+            path: "security",
+            name: "Security",
+            component: Security,
+          },
+          {
             path: "shares",
             name: "Shares",
             component: Shares,
@@ -92,6 +119,22 @@ const routes = [
             path: "global",
             name: "GlobalSettings",
             component: GlobalSettings,
+            meta: {
+              requiresAdmin: true,
+            },
+          },
+          {
+            path: "defaults",
+            name: "UserDefaults",
+            component: UserDefaults,
+            meta: {
+              requiresAdmin: true,
+            },
+          },
+          {
+            path: "commands",
+            name: "Commands",
+            component: Commands,
             meta: {
               requiresAdmin: true,
             },

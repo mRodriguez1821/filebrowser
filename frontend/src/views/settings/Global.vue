@@ -1,39 +1,39 @@
 <template>
   <errors v-if="error" :errorCode="error.status" />
-  <div class="row" v-else-if="!layoutStore.loading && settings !== null">
-    <div class="column">
-      <form class="card" @submit.prevent="save">
-        <div class="card-title">
-          <h2>{{ t("settings.globalSettings") }}</h2>
+  <div class="settings-flat-view" v-else-if="!layoutStore.loading && settings !== null">
+    <form @submit.prevent="save">
+      <section class="settings-section">
+        <h2 class="settings-section-title">{{ t("settings.globalSettings") }}</h2>
+
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" v-model="settings.signup" />
+            <span>{{ t("settings.allowSignup") }}</span>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" v-model="settings.createUserDir" />
+            <span>{{ t("settings.createUserDir") }}</span>
+          </label>
+
+          <label class="checkbox-label">
+            <input type="checkbox" v-model="settings.hideLoginButton" />
+            <span>{{ t("settings.hideLoginButton") }}</span>
+          </label>
         </div>
 
-        <div class="card-content">
-          <p>
-            <input type="checkbox" v-model="settings.signup" />
-            {{ t("settings.allowSignup") }}
-          </p>
-
-          <p>
-            <input type="checkbox" v-model="settings.createUserDir" />
-            {{ t("settings.createUserDir") }}
-          </p>
-
-          <p>
-            <input type="checkbox" v-model="settings.hideLoginButton" />
-            {{ t("settings.hideLoginButton") }}
-          </p>
-
-          <p>
-            <label class="small">{{ t("settings.userHomeBasePath") }}</label>
+        <div class="form-row-group">
+          <div class="form-field">
+            <label class="form-label">{{ t("settings.userHomeBasePath") }}</label>
             <input
               class="input input--block"
               type="text"
               v-model="settings.userHomeBasePath"
             />
-          </p>
+          </div>
 
-          <p>
-            <label for="minimumPasswordLength">{{
+          <div class="form-field">
+            <label class="form-label" for="minimumPasswordLength">{{
               t("settings.minimumPasswordLength")
             }}</label>
             <vue-number-input
@@ -42,206 +42,130 @@
               id="minimumPasswordLength"
               :min="1"
             />
-          </p>
-
-          <h3>{{ t("settings.rules") }}</h3>
-          <p class="small">{{ t("settings.globalRules") }}</p>
-          <rules v-model:rules="settings.rules" />
-
-          <div v-if="enableExec">
-            <h3>{{ t("settings.executeOnShell") }}</h3>
-            <p class="small">{{ t("settings.executeOnShellDescription") }}</p>
-            <input
-              class="input input--block"
-              type="text"
-              placeholder="bash -c, cmd /c, ..."
-              v-model="shellValue"
-            />
           </div>
+        </div>
 
-          <h3>{{ t("settings.branding") }}</h3>
+        <h3>{{ t("settings.rules") }}</h3>
+        <p class="small">{{ t("settings.globalRules") }}</p>
+        <rules v-model:rules="settings.rules" />
 
-          <i18n-t
-            keypath="settings.brandingHelp"
-            tag="p"
-            class="small"
-            scope="global"
+        <div v-if="enableExec">
+          <h3>{{ t("settings.executeOnShell") }}</h3>
+          <p class="small">{{ t("settings.executeOnShellDescription") }}</p>
+          <input
+            class="input input--block"
+            type="text"
+            placeholder="bash -c, cmd /c, ..."
+            v-model="shellValue"
+          />
+        </div>
+
+        <h3>{{ t("settings.branding") }}</h3>
+
+        <i18n-t
+          keypath="settings.brandingHelp"
+          tag="p"
+          class="small"
+          scope="global"
+        >
+          <a
+            class="link"
+            target="_blank"
+            href="https://github.com/filebrowser/filebrowser/blob/master/docs/customization.md#custom-branding"
+            >{{ t("settings.documentation") }}</a
           >
-            <a
-              class="link"
-              target="_blank"
-              href="https://github.com/filebrowser/filebrowser/blob/master/docs/customization.md#custom-branding"
-              >{{ t("settings.documentation") }}</a
-            >
-          </i18n-t>
+        </i18n-t>
 
-          <p>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
             <input
               type="checkbox"
               v-model="settings.branding.disableExternal"
               id="branding-links"
             />
-            {{ t("settings.disableExternalLinks") }}
-          </p>
+            <span>{{ t("settings.disableExternalLinks") }}</span>
+          </label>
 
-          <p>
+          <label class="checkbox-label">
             <input
               type="checkbox"
               v-model="settings.branding.disableUsedPercentage"
               id="branding-used-disk"
             />
-            {{ t("settings.disableUsedDiskPercentage") }}
-          </p>
+            <span>{{ t("settings.disableUsedDiskPercentage") }}</span>
+          </label>
+        </div>
 
-          <p>
-            <label for="theme">{{ t("settings.themes.title") }}</label>
+        <div class="form-row-group">
+          <div class="form-field">
+            <label class="form-label" for="theme">{{ t("settings.themes.title") }}</label>
             <themes
               class="input input--block"
               v-model:theme="settings.branding.theme"
               id="theme"
             ></themes>
-          </p>
+          </div>
 
-          <p>
-            <label for="branding-name">{{ t("settings.instanceName") }}</label>
+          <div class="form-field">
+            <label class="form-label" for="branding-name">{{ t("settings.instanceName") }}</label>
             <input
               class="input input--block"
               type="text"
               v-model="settings.branding.name"
               id="branding-name"
             />
-          </p>
+          </div>
+        </div>
 
-          <p>
-            <label for="branding-files">{{
-              t("settings.brandingDirectoryPath")
+        <div class="form-field">
+          <label class="form-label" for="branding-files">{{
+            t("settings.brandingDirectoryPath")
+          }}</label>
+          <input
+            class="input input--block"
+            type="text"
+            v-model="settings.branding.files"
+            id="branding-files"
+          />
+        </div>
+
+        <h3>{{ t("settings.tusUploads") }}</h3>
+        <p class="small">{{ t("settings.tusUploadsHelp") }}</p>
+
+        <div class="form-row-group">
+          <div class="form-field">
+            <label class="form-label" for="tus-chunkSize">{{
+              t("settings.tusUploadsChunkSize")
             }}</label>
             <input
               class="input input--block"
               type="text"
-              v-model="settings.branding.files"
-              id="branding-files"
+              v-model="formattedChunkSize"
+              id="tus-chunkSize"
             />
-          </p>
+          </div>
 
-          <h3>{{ t("settings.tusUploads") }}</h3>
-
-          <p class="small">{{ t("settings.tusUploadsHelp") }}</p>
-
-          <div class="tusConditionalSettings">
-            <p>
-              <label for="tus-chunkSize">{{
-                t("settings.tusUploadsChunkSize")
-              }}</label>
-              <input
-                class="input input--block"
-                type="text"
-                v-model="formattedChunkSize"
-                id="tus-chunkSize"
-              />
-            </p>
-
-            <p>
-              <label for="tus-retryCount">{{
-                t("settings.tusUploadsRetryCount")
-              }}</label>
-              <vue-number-input
-                controls
-                v-model.number="settings.tus.retryCount"
-                id="tus-retryCount"
-                :min="0"
-              />
-            </p>
+          <div class="form-field">
+            <label class="form-label" for="tus-retryCount">{{
+              t("settings.tusUploadsRetryCount")
+            }}</label>
+            <vue-number-input
+              controls
+              v-model.number="settings.tus.retryCount"
+              id="tus-retryCount"
+              :min="0"
+            />
           </div>
         </div>
+      </section>
 
-        <div class="card-action">
-          <input
-            class="button button--flat"
-            type="submit"
-            :value="t('buttons.update')"
-          />
-        </div>
-      </form>
-    </div>
-
-    <div class="column">
-      <form class="card" @submit.prevent="save">
-        <div class="card-title">
-          <h2>{{ t("settings.userDefaults") }}</h2>
-        </div>
-
-        <div class="card-content">
-          <p class="small">{{ t("settings.defaultUserDescription") }}</p>
-
-          <user-form
-            :isNew="false"
-            :isDefault="true"
-            v-model:user="settings.defaults"
-          />
-        </div>
-
-        <div class="card-action">
-          <input
-            class="button button--flat"
-            type="submit"
-            :value="t('buttons.update')"
-          />
-        </div>
-      </form>
-    </div>
-
-    <div class="column">
-      <form v-if="enableExec" class="card" @submit.prevent="save">
-        <div class="card-title">
-          <h2>{{ t("settings.commandRunner") }}</h2>
-        </div>
-
-        <div class="card-content">
-          <i18n-t
-            keypath="settings.commandRunnerHelp"
-            tag="p"
-            class="small"
-            scope="global"
-          >
-            <code>FILE</code>
-            <code>SCOPE</code>
-            <a
-              class="link"
-              target="_blank"
-              href="https://github.com/filebrowser/filebrowser/blob/master/docs/command-execution.md#hook-runner"
-              >{{ t("settings.documentation") }}</a
-            >
-          </i18n-t>
-
-          <div
-            v-for="(command, key) in settings.commands"
-            :key="key"
-            class="collapsible"
-          >
-            <input :id="key" type="checkbox" />
-            <label :for="key">
-              <p>{{ capitalize(key) }}</p>
-              <i class="material-icons">arrow_drop_down</i>
-            </label>
-            <div class="collapse">
-              <textarea
-                class="input input--block input--textarea"
-                v-model.trim="commandObject[key]"
-              ></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-action">
-          <input
-            class="button button--flat"
-            type="submit"
-            :value="t('buttons.update')"
-          />
-        </div>
-      </form>
-    </div>
+      <div class="settings-floating-actions">
+        <button class="button" type="submit">
+          <i class="material-icons">save</i>
+          {{ t("buttons.update") }}
+        </button>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -250,7 +174,6 @@ import { settings as api } from "@/api";
 import { StatusError } from "@/api/utils";
 import Rules from "@/components/settings/Rules.vue";
 import Themes from "@/components/settings/Themes.vue";
-import UserForm from "@/components/settings/UserForm.vue";
 import { useLayoutStore } from "@/stores/layout";
 import { enableExec } from "@/utils/constants";
 import { getTheme, setTheme } from "@/utils/theme";

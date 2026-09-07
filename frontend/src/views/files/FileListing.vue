@@ -9,55 +9,54 @@
         :label="t('buttons.search')"
         @action="openSearch()"
       />
+    </header-bar>
 
-      <template #actions>
-        <template v-if="!isMobile">
-          <action
-            v-if="headerButtons.share"
-            icon="share"
-            :label="t('buttons.share')"
-            show="share"
-          />
-          <action
-            v-if="headerButtons.rename"
-            icon="mode_edit"
-            :label="t('buttons.rename')"
-            show="rename"
-          />
-          <action
-            v-if="headerButtons.copy"
-            id="copy-button"
-            icon="content_copy"
-            :label="t('buttons.copyFile')"
-            show="copy"
-          />
-          <action
-            v-if="headerButtons.move"
-            id="move-button"
-            icon="forward"
-            :label="t('buttons.moveFile')"
-            show="move"
-          />
-          <action
-            v-if="headerButtons.delete"
-            id="delete-button"
-            icon="delete"
-            :label="t('buttons.delete')"
-            show="delete"
-          />
-        </template>
+    <!-- Google Drive Selection Bar -->
+    <div
+      v-if="fileStore.selectedCount > 0"
+      id="file-selection-bar"
+      class="selection-bar-drive"
+    >
+      <div class="selection-bar-left">
+        <!-- Close / Deselect all button -->
+        <button
+          type="button"
+          class="selection-close-btn"
+          @click="deselectAll"
+          :title="t('buttons.deselectAll')"
+          :aria-label="t('buttons.deselectAll')"
+        >
+          <i class="material-icons">close</i>
+        </button>
 
+        <!-- Selected count text -->
+        <span class="selection-count-text">
+          {{ t("prompts.filesSelected", fileStore.selectedCount) }}
+        </span>
+
+        <!-- Select All / Deselect All Button -->
+        <button
+          type="button"
+          class="selection-select-all-btn"
+          @click="toggleSelectAll"
+          :title="isAllSelected ? t('buttons.deselectAll') : t('buttons.selectAll')"
+          :aria-label="isAllSelected ? t('buttons.deselectAll') : t('buttons.selectAll')"
+        >
+          <i class="material-icons">{{ isAllSelected ? "check_box" : "select_all" }}</i>
+          <span>{{ isAllSelected ? t("buttons.deselectAll") : t("buttons.selectAll") }}</span>
+        </button>
+      </div>
+
+      <div class="selection-bar-right">
+        <!-- Share -->
         <action
-          v-if="headerButtons.shell"
-          icon="code"
-          :label="t('buttons.shell')"
-          @action="layoutStore.toggleShell"
+          v-if="headerButtons.share"
+          icon="share"
+          :label="t('buttons.share')"
+          show="share"
         />
-        <action
-          :icon="viewIcon"
-          :label="t('buttons.switchView')"
-          @action="switchView"
-        />
+
+        <!-- Download -->
         <action
           v-if="headerButtons.download"
           icon="file_download"
@@ -65,62 +64,222 @@
           @action="download"
           :counter="fileStore.selectedCount"
         />
-        <action
-          v-if="headerButtons.upload"
-          icon="file_upload"
-          id="upload-button"
-          :label="t('buttons.upload')"
-          @action="uploadFunc"
-        />
-        <action icon="info" :label="t('buttons.info')" show="info" />
-        <action
-          icon="check_circle"
-          :label="t('buttons.selectMultiple')"
-          @action="toggleMultipleSelection"
-        />
-      </template>
-    </header-bar>
 
+        <!-- Move -->
+        <action
+          v-if="headerButtons.move"
+          icon="drive_file_move"
+          :label="t('buttons.moveFile')"
+          show="move"
+        />
+
+        <!-- Copy -->
+        <action
+          v-if="headerButtons.copy"
+          icon="content_copy"
+          :label="t('buttons.copyFile')"
+          show="copy"
+        />
+
+        <!-- Rename -->
+        <action
+          v-if="headerButtons.rename"
+          icon="mode_edit"
+          :label="t('buttons.rename')"
+          show="rename"
+        />
+
+        <!-- Delete -->
+        <action
+          v-if="headerButtons.delete"
+          icon="delete"
+          :label="t('buttons.delete')"
+          show="delete"
+        />
+
+        <!-- Info / Details -->
+        <action
+          v-if="fileStore.selectedCount === 1"
+          icon="info_outline"
+          :label="t('buttons.info')"
+          show="info"
+        />
+
+        <!-- Shell (if enabled) -->
+        <action
+          v-if="headerButtons.shell"
+          icon="terminal"
+          :label="t('buttons.shell')"
+          show="shell"
+        />
+      </div>
+    </div>
+
+    <!-- Google Drive Filter & Sort Toolbar -->
     <div
-      v-if="isMobile"
-      id="file-selection"
-      :class="{
-        'file-selection-margin-bottom': fileStore.multiple,
-      }"
+      class="drive-filter-bar"
+      v-if="!layoutStore.loading && (fileStore.req?.items?.length ?? 0) > 0"
     >
-      <span v-if="fileStore.selectedCount > 0">
-        {{ t("prompts.filesSelected", fileStore.selectedCount) }}
-      </span>
-      <action
-        v-if="headerButtons.share"
-        icon="share"
-        :label="t('buttons.share')"
-        show="share"
+      <!-- Filter Pills Row -->
+      <div class="filter-pills-row">
+        <!-- 1. Type Filter Pill -->
+        <div class="filter-pill-wrapper">
+          <button
+            type="button"
+            class="filter-pill-btn"
+            :class="{ active: selectedTypeFilter !== 'all' }"
+            @click.stop="toggleTypeMenu"
+          >
+            <span>{{ typeFilterLabel }}</span>
+            <i class="material-icons pill-arrow">arrow_drop_down</i>
+          </button>
+
+          <div v-if="showTypeMenu" class="filter-dropdown-menu" @click.stop>
+            <button
+              v-for="opt in typeOptions"
+              :key="opt.value"
+              type="button"
+              class="filter-dropdown-item"
+              :class="{ selected: selectedTypeFilter === opt.value }"
+              @click="setTypeFilter(opt.value)"
+            >
+              <i class="material-icons item-icon">{{ opt.icon }}</i>
+              <span>{{ opt.label }}</span>
+              <i
+                v-if="selectedTypeFilter === opt.value"
+                class="material-icons check-icon"
+                >check</i
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Modified Date Filter Pill -->
+        <div class="filter-pill-wrapper">
+          <button
+            type="button"
+            class="filter-pill-btn"
+            :class="{ active: selectedModifiedFilter !== 'all' }"
+            @click.stop="toggleModifiedMenu"
+          >
+            <span>{{ modifiedFilterLabel }}</span>
+            <i class="material-icons pill-arrow">arrow_drop_down</i>
+          </button>
+
+          <div v-if="showModifiedMenu" class="filter-dropdown-menu" @click.stop>
+            <button
+              v-for="opt in modifiedOptions"
+              :key="opt.value"
+              type="button"
+              class="filter-dropdown-item"
+              :class="{ selected: selectedModifiedFilter === opt.value }"
+              @click="setModifiedFilter(opt.value)"
+            >
+              <i class="material-icons item-icon">{{ opt.icon }}</i>
+              <span>{{ opt.label }}</span>
+              <i
+                v-if="selectedModifiedFilter === opt.value"
+                class="material-icons check-icon"
+                >check</i
+              >
+            </button>
+          </div>
+        </div>
+
+        <!-- Clear filters button if active -->
+        <button
+          v-if="hasActiveFilters"
+          type="button"
+          class="clear-filters-btn"
+          @click="clearAllFilters"
+          :title="t('files.clearFilters')"
+        >
+          <i class="material-icons">close</i>
+          <span>{{ t("files.clearFilters") }}</span>
+        </button>
+      </div>
+
+      <!-- Backdrop overlay to close dropdowns -->
+      <div
+        v-if="showTypeMenu || showModifiedMenu || showSortMenu"
+        class="filter-menu-backdrop"
+        @click="closeAllFilterMenus"
       />
-      <action
-        v-if="headerButtons.rename"
-        icon="mode_edit"
-        :label="t('buttons.rename')"
-        show="rename"
-      />
-      <action
-        v-if="headerButtons.copy"
-        icon="content_copy"
-        :label="t('buttons.copyFile')"
-        show="copy"
-      />
-      <action
-        v-if="headerButtons.move"
-        icon="forward"
-        :label="t('buttons.moveFile')"
-        show="move"
-      />
-      <action
-        v-if="headerButtons.delete"
-        icon="delete"
-        :label="t('buttons.delete')"
-        show="delete"
-      />
+    </div>
+
+    <!-- Sort Header Strip in Grid/Mosaic View -->
+    <div
+      class="drive-sort-strip"
+      v-if="!layoutStore.loading && isGridView && (dirs.length > 0 || files.length > 0)"
+    >
+      <div class="sort-pill-wrapper">
+        <button
+          type="button"
+          class="sort-pill-btn"
+          @click.stop="toggleSortMenu"
+          :title="t('files.sortBy')"
+        >
+          <span class="sort-label">{{ currentSortLabel }}</span>
+          <i
+            class="material-icons sort-direction-icon"
+            @click.stop="toggleSortDirection"
+            :title="isAsc ? t('files.sortDesc') : t('files.sortAsc')"
+          >
+            {{ currentSortIcon }}
+          </i>
+        </button>
+
+        <div
+          v-if="showSortMenu"
+          class="filter-dropdown-menu sort-dropdown-menu"
+          @click.stop
+        >
+          <button
+            type="button"
+            class="filter-dropdown-item"
+            :class="{ selected: currentSortBy === 'name' }"
+            @click="setSortBy('name')"
+          >
+            <i class="material-icons item-icon">sort_by_alpha</i>
+            <span>{{ t("files.name") }}</span>
+            <i
+              v-if="currentSortBy === 'name'"
+              class="material-icons check-icon"
+              >check</i
+            >
+          </button>
+
+          <button
+            type="button"
+            class="filter-dropdown-item"
+            :class="{ selected: currentSortBy === 'size' }"
+            @click="setSortBy('size')"
+          >
+            <i class="material-icons item-icon">data_usage</i>
+            <span>{{ t("files.size") }}</span>
+            <i
+              v-if="currentSortBy === 'size'"
+              class="material-icons check-icon"
+              >check</i
+            >
+          </button>
+
+          <button
+            type="button"
+            class="filter-dropdown-item"
+            :class="{ selected: currentSortBy === 'modified' }"
+            @click="setSortBy('modified')"
+          >
+            <i class="material-icons item-icon">access_time</i>
+            <span>{{ t("files.lastModified") }}</span>
+            <i
+              v-if="currentSortBy === 'modified'"
+              class="material-icons check-icon"
+              >check</i
+            >
+          </button>
+        </div>
+      </div>
     </div>
 
     <div v-if="layoutStore.loading">
@@ -358,6 +517,7 @@ import Action from "@/components/header/Action.vue";
 import Search from "@/components/Search.vue";
 import Item from "@/components/files/ListingItem.vue";
 import ContextMenu from "@/components/ContextMenu.vue";
+import dayjs from "dayjs";
 import {
   computed,
   inject,
@@ -380,6 +540,94 @@ const itemWeight = ref<number>(0);
 const isContextMenuVisible = ref<boolean>(false);
 const contextMenuPos = ref<{ x: number; y: number }>({ x: 0, y: 0 });
 
+// Filters state
+const selectedTypeFilter = ref<string>("all");
+const selectedModifiedFilter = ref<string>("all");
+
+const showTypeMenu = ref<boolean>(false);
+const showModifiedMenu = ref<boolean>(false);
+const showSortMenu = ref<boolean>(false);
+
+const closeAllFilterMenus = () => {
+  showTypeMenu.value = false;
+  showModifiedMenu.value = false;
+  showSortMenu.value = false;
+};
+
+const toggleTypeMenu = () => {
+  showModifiedMenu.value = false;
+  showSortMenu.value = false;
+  showTypeMenu.value = !showTypeMenu.value;
+};
+
+const toggleModifiedMenu = () => {
+  showTypeMenu.value = false;
+  showSortMenu.value = false;
+  showModifiedMenu.value = !showModifiedMenu.value;
+};
+
+const toggleSortMenu = () => {
+  showTypeMenu.value = false;
+  showModifiedMenu.value = false;
+  showSortMenu.value = !showSortMenu.value;
+};
+
+const setTypeFilter = (val: string) => {
+  selectedTypeFilter.value = val;
+  showTypeMenu.value = false;
+};
+
+const setModifiedFilter = (val: string) => {
+  selectedModifiedFilter.value = val;
+  showModifiedMenu.value = false;
+};
+
+const clearAllFilters = () => {
+  selectedTypeFilter.value = "all";
+  selectedModifiedFilter.value = "all";
+  closeAllFilterMenus();
+};
+
+const hasActiveFilters = computed(
+  () =>
+    selectedTypeFilter.value !== "all" || selectedModifiedFilter.value !== "all"
+);
+
+const typeOptions = computed(() => [
+  { value: "all", label: t("files.allTypes"), icon: "apps" },
+  { value: "folders", label: t("files.typeFolders"), icon: "folder" },
+  { value: "documents", label: t("files.typeDocuments"), icon: "description" },
+  { value: "images", label: t("files.typeImages"), icon: "image" },
+  { value: "pdf", label: t("files.typePdfs"), icon: "picture_as_pdf" },
+  { value: "audio", label: t("files.typeAudio"), icon: "audiotrack" },
+  { value: "video", label: t("files.typeVideo"), icon: "movie" },
+  { value: "archives", label: t("files.typeArchives"), icon: "folder_zip" },
+]);
+
+const modifiedOptions = computed(() => [
+  { value: "all", label: t("files.modAny"), icon: "history" },
+  { value: "today", label: t("files.modToday"), icon: "today" },
+  { value: "7days", label: t("files.mod7Days"), icon: "date_range" },
+  { value: "30days", label: t("files.mod30Days"), icon: "calendar_month" },
+  { value: "year", label: t("files.modThisYear"), icon: "event" },
+]);
+
+const typeFilterLabel = computed(() => {
+  const opt = typeOptions.value.find((o) => o.value === selectedTypeFilter.value);
+  return opt && selectedTypeFilter.value !== "all"
+    ? opt.label
+    : t("files.filterType");
+});
+
+const modifiedFilterLabel = computed(() => {
+  const opt = modifiedOptions.value.find(
+    (o) => o.value === selectedModifiedFilter.value
+  );
+  return opt && selectedModifiedFilter.value !== "all"
+    ? opt.label
+    : t("files.filterModified");
+});
+
 const $showError = inject<IToastError>("$showError")!;
 
 const clipboardStore = useClipboardStore();
@@ -392,6 +640,7 @@ const { req } = storeToRefs(fileStore);
 const route = useRoute();
 onBeforeRouteUpdate(() => {
   hideContextMenu();
+  closeAllFilterMenus();
 });
 
 const { t } = useI18n();
@@ -414,13 +663,138 @@ const ascOrdered = computed(() =>
   fileStore.req ? fileStore.req.sorting.asc : false
 );
 
+const currentSortBy = computed(() => fileStore.req?.sorting.by || "name");
+const isAsc = computed(() => fileStore.req?.sorting.asc ?? true);
+
+const currentSortLabel = computed(() => {
+  if (currentSortBy.value === "size") return t("files.size");
+  if (currentSortBy.value === "modified") return t("files.lastModified");
+  return t("files.name");
+});
+
+const currentSortIcon = computed(() => {
+  return isAsc.value ? "arrow_upward" : "arrow_downward";
+});
+
+const isGridView = computed(
+  () => (authStore.user?.viewMode ?? "") !== "list"
+);
+
+const setSortBy = async (by: string) => {
+  showSortMenu.value = false;
+  const asc = currentSortBy.value === by ? !isAsc.value : true;
+  try {
+    if (authStore.user?.id) {
+      await users.update({ id: authStore.user?.id, sorting: { by, asc } }, [
+        "sorting",
+      ]);
+    }
+  } catch (e: any) {
+    $showError(e);
+  }
+  fileStore.reload = true;
+};
+
+const toggleSortDirection = async () => {
+  const by = currentSortBy.value;
+  const asc = !isAsc.value;
+  try {
+    if (authStore.user?.id) {
+      await users.update({ id: authStore.user?.id, sorting: { by, asc } }, [
+        "sorting",
+      ]);
+    }
+  } catch (e: any) {
+    $showError(e);
+  }
+  fileStore.reload = true;
+};
+
+const isHomeView = computed(() => route.query.view === "home");
+const isRecentView = computed(() => route.query.view === "recent");
+
 const dirs = computed(() => items.value.dirs.slice(0, showLimit.value));
 
 const items = computed(() => {
   const dirs: any[] = [];
   const files: any[] = [];
 
-  fileStore.req?.items.forEach((item) => {
+  let rawItems = [...(fileStore.req?.items || [])];
+
+  // 1. Type Filter
+  if (selectedTypeFilter.value !== "all") {
+    rawItems = rawItems.filter((item) => {
+      switch (selectedTypeFilter.value) {
+        case "folders":
+          return item.isDir;
+        case "documents":
+          return (
+            !item.isDir &&
+            (item.type === "text" ||
+              item.type === "textImmutable" ||
+              [
+                ".doc",
+                ".docx",
+                ".odt",
+                ".rtf",
+                ".txt",
+                ".md",
+                ".csv",
+                ".xlsx",
+                ".xls",
+                ".pptx",
+                ".ppt",
+              ].includes(item.extension?.toLowerCase()))
+          );
+        case "images":
+          return !item.isDir && item.type === "image";
+        case "pdf":
+          return !item.isDir && item.extension?.toLowerCase() === ".pdf";
+        case "audio":
+          return !item.isDir && item.type === "audio";
+        case "video":
+          return !item.isDir && item.type === "video";
+        case "archives":
+          return (
+            !item.isDir &&
+            [".zip", ".rar", ".7z", ".tar", ".gz", ".bz2", ".xz", ".iso"].includes(
+              item.extension?.toLowerCase()
+            )
+          );
+        default:
+          return true;
+      }
+    });
+  }
+
+  // 2. Date Modified Filter
+  if (selectedModifiedFilter.value !== "all") {
+    const now = dayjs();
+    rawItems = rawItems.filter((item) => {
+      const itemDate = dayjs(item.modified);
+      switch (selectedModifiedFilter.value) {
+        case "today":
+          return itemDate.isSame(now, "day");
+        case "7days":
+          return now.diff(itemDate, "day") <= 7;
+        case "30days":
+          return now.diff(itemDate, "day") <= 30;
+        case "year":
+          return itemDate.isSame(now, "year");
+        default:
+          return true;
+      }
+    });
+  }
+
+  if (isHomeView.value || isRecentView.value) {
+    rawItems.sort(
+      (a, b) =>
+        new Date(b.modified).getTime() - new Date(a.modified).getTime()
+    );
+  }
+
+  rawItems.forEach((item) => {
     if (item.isDir) {
       dirs.push(item);
     } else {
@@ -489,6 +863,24 @@ const headerButtons = computed(() => {
     copy: fileStore.selectedCount > 0 && authStore.user?.perm.create,
   };
 });
+
+const isAllSelected = computed(() => {
+  const total = fileStore.req?.items?.length ?? 0;
+  return total > 0 && fileStore.selectedCount === total;
+});
+
+const toggleSelectAll = () => {
+  if (!fileStore.req?.items) return;
+  if (isAllSelected.value) {
+    fileStore.selected = [];
+  } else {
+    fileStore.selected = fileStore.req.items.map((item) => item.index);
+  }
+};
+
+const deselectAll = () => {
+  fileStore.selected = [];
+};
 
 const isMobile = computed(() => {
   return width.value <= 736;

@@ -461,3 +461,27 @@ html[dir="rtl"] .card.floating .card-content .file-list {
   direction: ltr;
   text-align: left;
 }
+
+/* * * * * * * * * * * * * * * *
+ *       TOAST NOTIFICATIONS   *
+ * * * * * * * * * * * * * * * */
+
+.Vue-Toastification__container.top-right {
+  top: 4.5em !important;
+  right: 1.5em !important;
+  z-index: 10000 !important;
+}
+
+html[dir="rtl"] .Vue-Toastification__container.top-right {
+  right: initial !important;
+  left: 1.5em !important;
+}
+
+.Vue-Toastification__toast {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.2) !important;
+  font-family: inherit !important;
+  font-size: 0.95em !important;
+  padding: 12px 18px !important;
+  min-height: auto !important;
+}

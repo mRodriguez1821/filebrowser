@@ -1,12 +1,388 @@
 html[dir="rtl"] #listing {
-  margin-right: 16em;
+  margin-right: 17em;
+}
+
+/* Google Drive Selection Bar - Floating Sticky */
+.selection-bar-drive {
+  position: sticky;
+  top: 4.25em;
+  z-index: 850;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--surfaceSecondary);
+  border: 1px solid var(--borderPrimary);
+  border-radius: 9999px;
+  padding: 0.35em 0.85em;
+  margin: 0.4em 0.25em 0.8em 0.25em;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  animation: fadeInSelection 0.16s cubic-bezier(0.2, 0, 0, 1);
+  min-height: 46px;
+}
+
+@keyframes fadeInSelection {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.selection-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+
+.selection-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: var(--textSecondary);
+  cursor: pointer;
+  transition: 0.15s ease all;
+}
+
+.selection-close-btn:hover {
+  background-color: var(--hover);
+  color: var(--textPrimary);
+}
+
+.selection-close-btn i {
+  font-size: 1.15em;
+}
+
+.selection-count-text {
+  font-size: 0.95em;
+  font-weight: 500;
+  color: var(--textPrimary);
+  margin-right: 0.4em;
+  white-space: nowrap;
+}
+
+.selection-select-all-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  background: transparent;
+  border: 1px solid var(--borderPrimary);
+  border-radius: 9999px;
+  padding: 0.3em 0.8em;
+  color: var(--textPrimary);
+  font-size: 0.85em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.15s ease all;
+  white-space: nowrap;
+}
+
+.selection-select-all-btn:hover {
+  background-color: var(--hover);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.selection-select-all-btn i {
+  font-size: 1.15em;
+}
+
+.selection-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
+.selection-bar-right .action {
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--textSecondary);
+  transition: 0.15s ease all;
+}
+
+.selection-bar-right .action:hover {
+  background-color: var(--hover);
+  color: var(--textPrimary);
+}
+
+.selection-bar-right .action i {
+  font-size: 1.25em;
+  padding: 0;
+}
+
+.selection-bar-right .action span:not(.counter) {
+  display: none;
+}
+
+@media (max-width: 736px) {
+  .selection-bar-drive {
+    position: sticky;
+    top: 4.15em;
+    width: auto;
+    margin: 0.3em 0.2em 0.7em 0.2em;
+    padding: 0.3em 0.6em;
+    z-index: 850;
+  }
+  .selection-select-all-btn span {
+    display: none;
+  }
+  .selection-count-text {
+    font-size: 0.88em;
+  }
+}
+
+/* Google Drive Filter Bar */
+.drive-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.25em 0.5em 0.5em 0.5em;
+  margin-bottom: 0.25em;
+  user-select: none;
+  flex-wrap: wrap;
+}
+
+.filter-pills-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex-wrap: wrap;
+}
+
+.filter-pill-wrapper {
+  position: relative;
+}
+
+.filter-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.4em 0.9em;
+  background: var(--surfacePrimary);
+  border: 1px solid var(--borderPrimary);
+  border-radius: 9999px;
+  color: var(--textPrimary);
+  font-size: 0.88em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.15s ease all;
+}
+
+.filter-pill-btn:hover {
+  background: var(--hover);
+  border-color: var(--borderSecondary);
+}
+
+.filter-pill-btn.active {
+  background: var(--nav-active-bg);
+  border-color: var(--blue);
+  color: var(--nav-active-text);
+  font-weight: 600;
+}
+
+.pill-arrow {
+  font-size: 1.15em;
+  color: var(--iconTertiary);
+  margin-left: -0.1em;
+}
+
+.filter-pill-btn.active .pill-arrow {
+  color: currentColor;
+}
+
+.clear-filters-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0.35em 0.7em;
+  background: transparent;
+  border: none;
+  color: var(--red);
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 9999px;
+  transition: 0.12s ease background-color;
+}
+
+.clear-filters-btn:hover {
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.clear-filters-btn i {
+  font-size: 1.1em;
+}
+
+/* Filter dropdown menu */
+.filter-dropdown-menu {
+  position: absolute;
+  top: 2.6em;
+  left: 0;
+  background: var(--surfacePrimary);
+  border: 1px solid var(--borderPrimary);
+  border-radius: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+  padding: 0.4em 0;
+  min-width: 13.5em;
+  z-index: 1100;
+  animation: fadeInSelection 0.12s ease;
+}
+
+.filter-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+  width: 100%;
+  padding: 0.6em 1em;
+  border: none;
+  background: transparent;
+  color: var(--textSecondary);
+  font-size: 0.88em;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.1s ease background-color;
+  font-family: inherit;
+}
+
+.filter-dropdown-item:hover {
+  background: var(--surfaceSecondary);
+  color: var(--textPrimary);
+}
+
+.filter-dropdown-item.selected {
+  color: var(--blue);
+  font-weight: 600;
+  background: var(--hover);
+}
+
+.filter-dropdown-item .item-icon {
+  font-size: 1.25em;
+  color: var(--iconTertiary);
+}
+
+.filter-dropdown-item.selected .item-icon {
+  color: var(--blue);
+}
+
+.filter-dropdown-item .check-icon {
+  margin-left: auto;
+  font-size: 1.15em;
+  color: var(--blue);
+}
+
+.filter-menu-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1050;
+}
+
+/* Sort Strip in Grid / Mosaic View */
+.drive-sort-strip {
+  display: flex;
+  align-items: center;
+  padding: 0.25em 0.5em 0.4em 0.5em;
+  user-select: none;
+}
+
+.sort-pill-wrapper {
+  position: relative;
+}
+
+.sort-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.35em 0.75em;
+  background: transparent;
+  border: 1px solid var(--borderPrimary);
+  border-radius: 9999px;
+  color: var(--textPrimary);
+  font-size: 0.88em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s ease all;
+}
+
+.sort-pill-btn:hover {
+  background: var(--hover);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.sort-direction-icon {
+  font-size: 1.25em;
+  color: var(--blue);
+  padding: 0.1em;
+  border-radius: 50%;
+  transition: 0.15s ease background-color;
+}
+
+.sort-direction-icon:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.sort-dropdown-menu {
+  top: 2.6em;
+  left: 0;
+}
+
+.recent-header-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8em 1em 0.4em 1em;
+  margin-bottom: 0.5em;
+}
+
+.recent-section-title {
+  font-size: 1.45em;
+  font-weight: 700;
+  color: var(--textSecondary);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.view-all-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 0.92em;
+  font-weight: 600;
+  transition: 0.15s ease gap, 0.15s ease opacity;
+}
+
+.view-all-link:hover {
+  opacity: 0.85;
+  gap: 0.5em;
+}
+
+.view-all-link i {
+  font-size: 1.15em;
 }
 
 #listing h2 {
-  margin: 0 0 0 0.5em;
-  font-size: 0.9em;
+  margin: 0.8em 0 0.4em 0.5em;
+  font-size: 0.95em;
   color: var(--textPrimary);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 #listing .item div:last-of-type * {
@@ -85,24 +461,24 @@ html[dir="rtl"] #listing {
 }
 
 #listing.mosaic {
-  padding-top: 1em;
+  padding-top: 0;
   margin: 0 -0.5em;
 }
 
 #listing.mosaic .item {
   width: calc(33% - 1em);
   margin: 0.5em;
-  padding: 0.5em;
-  border-radius: 0.2em;
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.06),
-    0 1px 2px rgba(0, 0, 0, 0.12);
+  padding: 0.75em;
+  border-radius: 12px;
+  border: 1px solid var(--borderPrimary);
+  background: var(--surfacePrimary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: 0.15s ease box-shadow, 0.15s ease border-color;
 }
 
 #listing.mosaic .item:hover {
-  box-shadow:
-    0 1px 3px rgba(0, 0, 0, 0.12),
-    0 1px 2px rgba(0, 0, 0, 0.24) !important;
+  border-color: var(--borderSecondary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
 }
 
 #listing.mosaic .header {

@@ -57,7 +57,7 @@ app.directive("focus", {
 });
 
 const toastConfig = {
-  position: POSITION.BOTTOM_CENTER,
+  position: POSITION.TOP_RIGHT,
   timeout: 4000,
   closeOnClick: true,
   pauseOnFocusLoss: true,

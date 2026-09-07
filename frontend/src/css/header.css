@@ -1,21 +1,163 @@
 header {
   z-index: 1000;
   background: var(--surfacePrimary);
-  border-bottom: 1px solid var(--divider);
-  box-shadow: 0 0 5px var(--borderPrimary);
+  border-bottom: 1px solid var(--borderPrimary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   position: fixed;
   top: 0;
   left: 0;
   height: 4em;
   width: 100%;
-  padding: 0;
+  padding: 0 1.25em;
   display: flex;
-  padding: 0.5em 0.5em 0.5em 1em;
   align-items: center;
+  justify-content: space-between;
 }
 
-header > * {
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
   flex: 0 0 auto;
+}
+
+.brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  text-decoration: none;
+  color: var(--textSecondary);
+  user-select: none;
+}
+
+.brand-logo {
+  height: 2.2em;
+  width: auto;
+  object-fit: contain;
+}
+
+.header-back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  color: var(--textSecondary);
+  text-decoration: none;
+  transition: 0.15s ease background-color;
+}
+
+.header-back-btn:hover {
+  background-color: var(--hover);
+}
+
+.header-back-btn i {
+  font-size: 1.4em;
+}
+
+.settings-header-title {
+  font-size: 1.35em;
+  font-weight: 600;
+  color: var(--textSecondary);
+  letter-spacing: -0.01em;
+}
+
+.brand-name {
+  font-size: 1.25em;
+  font-weight: 600;
+  color: var(--textSecondary);
+  letter-spacing: -0.01em;
+}
+
+.header-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  max-width: 45em;
+  margin: 0 1.5em;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: 0 0 auto;
+}
+
+.header-icon-btn {
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--textPrimary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.15s ease background-color, 0.15s ease color;
+  text-decoration: none;
+}
+
+.header-icon-btn:hover {
+  background: var(--hover);
+  color: var(--textSecondary);
+}
+
+.header-icon-btn i {
+  font-size: 1.35em;
+}
+
+.user-avatar {
+  width: 2.2em;
+  height: 2.2em;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lang-switcher {
+  position: relative;
+}
+
+.lang-menu {
+  position: absolute;
+  top: 3em;
+  right: 0;
+  background: var(--surfacePrimary);
+  border: 1px solid var(--borderPrimary);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  padding: 0.4em 0;
+  z-index: 1100;
+  min-width: 140px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.lang-item {
+  padding: 0.5em 1em;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: var(--textSecondary);
+  transition: 0.1s ease background-color;
+}
+
+.lang-item:hover {
+  background: var(--surfaceSecondary);
+}
+
+.lang-item.active {
+  color: var(--blue);
+  font-weight: 600;
+  background: var(--surfaceSecondary);
 }
 
 header title {
@@ -37,22 +179,8 @@ header a:hover {
   color: inherit;
 }
 
-header > div:first-child > .action,
-header img {
-  margin-right: 1em;
-}
-
-header img {
-  height: 2.5em;
-}
-
 header .action span {
   display: none;
-}
-
-header > div div {
-  vertical-align: middle;
-  position: relative;
 }
 
 header .search-button,
